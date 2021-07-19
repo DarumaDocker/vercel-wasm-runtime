@@ -3,7 +3,20 @@ const { spawn } = require('child_process');
 const path = require('path');
 
 module.exports = (req, res) => {
-  const wasmedge = spawn(path.join(__dirname, 'WasmEdge-0.8.1-Linux/bin/wasmedge'), [path.join(__dirname, 'grayscale.so')]);
+  const wasmFile = 'grayscale.wasm';
+  const soFile = wasmFile.replace(/\wasm$/, 'so');
+
+  let byteFile = soFile;
+  try {
+    fs.accessSync(path.join(__dirname, 'wasm', soFile), fs.constants.F_OK | fs.constants.R_OK);
+  } catch {
+    byteFile = wasmFile;
+  }
+
+  const wasmedge = spawn(
+    path.join(__dirname, 'WasmEdge-0.8.1-Linux/bin/wasmedge'),
+    [path.join(__dirname, 'wasm', byteFile)]
+  );
 
   let d = [];
   wasmedge.stdout.on('data', (data) => {

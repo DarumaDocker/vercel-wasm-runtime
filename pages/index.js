@@ -8,48 +8,6 @@ export default function Home() {
   const [resImg, setResImg] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Vercel Wasm Runtime</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://github.com/WasmEdge/WasmEdge">WasmEdge!</a>
-        </h1>
-
-        <div className={styles.operating}>
-          <div>
-            <input type="file" id="fileElem" accept="image/png" className={styles['visually-hidden']} onChange={fileSelected} />
-            <label htmlFor="fileElem" className={styles.noselect}>Select an image</label>
-            <div className={styles.thumb}>
-              {origImg && <img src={origImg.src} />}
-            </div>
-          </div>
-          <div>
-            <button id="runBtn" onClick={runWasm} disabled={!enableWasm || loading}>{loading ? 'Loading' : 'Run Wasm'}</button>
-            <div className={styles.thumb}>
-              {resImg && <img src={resImg.src} />}
-            </div>
-          </div>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  );
-
   function fileSelected(e) {
     const file = e.target.files[0];
     if (!file) {
@@ -97,4 +55,61 @@ export default function Home() {
     };
     reader.readAsArrayBuffer(origImg.file);
   }
+
+  return (
+    <div className={styles.container}>
+      <Head>
+        <title>Vercel Wasm Runtime</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <main className={styles.main}>
+        <h1 className={styles.title}>
+          Welcome to <a href="https://github.com/WasmEdge/WasmEdge">WasmEdge!</a>
+        </h1>
+
+        <div className={styles.operating}>
+          <div>
+            <input type="file" id="fileElem" accept="image/png" className={styles['visually-hidden']} onChange={fileSelected} />
+            <label htmlFor="fileElem" className={styles.noselect}>Select an image</label>
+            <div className={styles.thumb}>
+              {origImg && <img src={origImg.src} />}
+            </div>
+          </div>
+          <div>
+            <button id="runBtn" onClick={runWasm} disabled={!enableWasm || loading}>{loading ? 'Loading' : 'Run Wasm'}</button>
+            <div className={styles.thumb}>
+              {resImg && <img src={resImg.src} />}
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer className={styles.footer}>
+        <a
+          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Powered by{' '}
+          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
+        </a>
+      </footer>
+    </div>
+  );
+}
+
+function init() {
+  var oReq = new XMLHttpRequest();
+  oReq.open("POST", '/api/compile', true);
+  oReq.setRequestHeader('wasm-file', 'grayscale.wasm');
+  oReq.onload = (function() {
+    return function (oEvent) {
+    };
+  })();
+  oReq.send();
+}
+
+if (typeof window !== "undefined") {
+  init();
 }
