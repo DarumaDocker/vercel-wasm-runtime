@@ -16,9 +16,7 @@ module.exports = (req, res) => {
         ]
       );
 
-      wasmedgec.on('close', function() {
-        res.send('compiled');
-      })
+      res.send('compiled');
     } else {
       res.send('exists');
     }
