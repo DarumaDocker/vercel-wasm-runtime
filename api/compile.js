@@ -2,7 +2,7 @@ const fs = require('fs');
 const { spawn } = require('child_process');
 const path = require('path');
 
-export default function handler(req, res) {
+module.exports = (req, res) => {
   const wasmFile = 'grayscale.wasm';
   const soPath = path.join(__dirname, 'wasm', wasmFile.replace(/\wasm$/, 'so'));
 
