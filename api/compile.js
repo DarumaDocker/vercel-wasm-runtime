@@ -4,7 +4,7 @@ const path = require('path');
 
 module.exports = (req, res) => {
   const wasmFile = 'grayscale.wasm';
-  const soPath = path.join(__dirname, 'wasm', wasmFile.replace(/\wasm$/, 'so'));
+  const soPath = path.join('/tmp', wasmFile.replace(/\wasm$/, 'so'));
 
   fs.access(soPath, fs.constants.F_OK | fs.constants.R_OK, (err) => {
     if (err) {

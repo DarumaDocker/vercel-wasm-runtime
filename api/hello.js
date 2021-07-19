@@ -4,18 +4,18 @@ const path = require('path');
 
 module.exports = (req, res) => {
   const wasmFile = 'grayscale.wasm';
-  const soFile = wasmFile.replace(/\wasm$/, 'so');
+  const soPath = path.join('/tmp', wasmFile.replace(/\wasm$/, 'so'));
 
-  let byteFile = soFile;
+  let bytePath = soPath;
   try {
-    fs.accessSync(path.join(__dirname, 'wasm', soFile), fs.constants.F_OK | fs.constants.R_OK);
+    fs.accessSync(soPath, fs.constants.F_OK | fs.constants.R_OK);
   } catch {
-    byteFile = wasmFile;
+    bytePath = path.join(__dirname, 'wasm', wasmFile);
   }
 
   const wasmedge = spawn(
     path.join(__dirname, 'WasmEdge-0.8.1-Linux', 'bin', '/wasmedge'),
-    [path.join(__dirname, 'wasm', byteFile)]
+    [bytePath]
   );
 
   let d = [];
