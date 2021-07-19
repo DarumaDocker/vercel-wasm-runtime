@@ -14,7 +14,7 @@ module.exports = (req, res) => {
   }
 
   const wasmedge = spawn(
-    path.join(__dirname, 'WasmEdge-0.8.1-Linux', 'bin', '/wasmedge'),
+    path.join(__dirname, 'WasmEdge-0.8.1-Linux', 'bin', 'wasmedge'),
     [bytePath]
   );
 
