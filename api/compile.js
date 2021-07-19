@@ -9,7 +9,7 @@ module.exports = (req, res) => {
   fs.access(soPath, fs.constants.F_OK | fs.constants.R_OK, (err) => {
     if (err) {
       const wasmedgec = spawn(
-        path.join(path.join(__dirname, 'WasmEdge-0.8.1-Linux/bin/wasmedgec'),
+        path.join(__dirname, 'WasmEdge-0.8.1-Linux', 'bin', 'wasmedgec'),
         [
           path.join(__dirname, 'wasm', wasmFile),
           soPath
