@@ -3,7 +3,6 @@ const os = require('os');
 const { spawn } = require('child_process');
 const path = require('path');
 const axios = require('axios');
-const randomWords = require('random-words');
 
 module.exports = async (req, res) => {
   const funcId = req.query.funcId;
@@ -11,19 +10,14 @@ module.exports = async (req, res) => {
 
   try {
     await getWasmFile(wasmPath, funcId);
-    let query = req.query.query;
-    if (query) {
-      query = encodeURIComponent(query);
-    } else {
-      query = randomWords();
-    }
-    const unsplashImageStream = await getUnsplashImage(query);
-    if (unsplashImageStream) {
-      const buf = await runVm(wasmPath, unsplashImageStream);
+    let url = req.body.url;
+    const resourceStream = await getResource(url);
+    if (resourceStream) {
+      const buf = await runVm(wasmPath, resourceStream);
       res.setHeader('Content-Type', 'image/png');
       res.send(buf);
     } else {
-      res.status(404).end(`Not found any image for query "${req.query.query}"`);
+      res.status(404).end(`Can't get resource from "${url}"`);
     }
   } catch(err) {
     console.error(err);
@@ -57,27 +51,16 @@ async function getWasmFile(wasmPath, funcId) {
   });
 }
 
-async function getUnsplashImage(query) {
+async function getResource(url) {
   return new Promise((resolve, reject) => {
     axios({
       method: 'get',
-      headers: {Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`},
-      url: 'https://api.unsplash.com/search/photos?page=1&per_page=1&query=' + query
+      url: url,
+      responseType: 'stream'
     }).then((resp) => {
-      const data = resp.data;
-      if (data && data.results && data.results.length > 0) {
-        axios({
-          method: 'get',
-          url: data.results[0].urls.small,
-          responseType: 'stream'
-        }).then((imgResp) => {
-          resolve(imgResp.data);
-        }).catch((err) => {
-          reject();
-        });
-      } else {
-        resolve();
-      }
+      resolve(resp.data);
+    }).catch((err) => {
+      reject();
     });
   });
 }
